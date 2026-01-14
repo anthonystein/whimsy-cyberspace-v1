@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Whimsy Cyberspace</title>
+    <meta
+      name="description"
+      content="Nothing here is trying to convince you."
+    />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="mark" aria-label="Whimsy Cyberspace">
+        <span class="dot" aria-hidden="true"></span>
+        <img
+          class="brandLogo"
+          src="/assets/Whimsy Cyberspace Cross Heading.png"
+          alt="Whimsy Cyberspace"
+          decoding="async"
+          loading="eager"
+        />
+      </div>
+
+      <div class="topbarRight">
+        <button
+          class="quiet"
+          id="toggleHush"
+          type="button"
+          aria-label="Toggle hush mode"
+        >
+          hush
+        </button>
+      </div>
+    </header>
+
+    <main class="world" id="world">
+      <section class="threshold" aria-label="Threshold">
+        <p class="anchorLine" id="anchorLine">
+          Nothing here is trying to convince you.
+        </p>
+        <p class="subLine" id="subLine">
+          Enter slowly. If something belongs to you, it will stay with you.
+        </p>
+        <div class="microHint" id="microHint">
+          <span class="microKey">hover</span> to feel weight ·
+          <span class="microKey">enter</span> to step in ·
+          <span class="microKey">esc</span> to step back
+        </div>
+      </section>
+
+      <section class="field" id="field" aria-label="Field"></section>
+
+      <section class="overlay" id="overlay" aria-hidden="true">
+        <div
+          class="overlayCard"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Room"
+        >
+          <div class="overlayTop">
+            <div class="overlayNameWrap">
+              <div class="overlayName" id="overlayName"></div>
+              <div class="overlayMeta" id="overlayMeta"></div>
+            </div>
+
+            <button
+              class="close"
+              id="closeOverlay"
+              type="button"
+              aria-label="Close room"
+            >
+              close
+            </button>
+          </div>
+
+          <div class="overlayBody" id="overlayBody"></div>
+
+          <div class="overlayFoot">
+            <span class="sig">wc</span>
+            <span class="footnote"
+              >permanent presence (operative, unspoken)</span
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./main.js"></script>
+  </body>
+</html>
