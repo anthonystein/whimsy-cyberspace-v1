@@ -107,6 +107,19 @@ a:hover{
   border-bottom-color: rgba(20, 70, 210, 0.45);
 }
 
+/* Screen-reader only */
+.srOnly{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
 /* World */
 .world{
   min-height:100%;
@@ -364,6 +377,78 @@ a:hover{
   font-family: var(--mono);
   font-size: 12px;
   color: rgba(15,18,20,0.55);
+}
+
+/* Lead capture */
+.leadBox{
+  margin: 18px 0 8px;
+  padding: 14px 14px 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(15,18,20,0.10);
+  background: rgba(255,255,255,0.56);
+}
+.leadHead{
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(15,18,20,0.62);
+}
+.leadCopy{
+  margin-top: 8px;
+  font-size: 14px;
+  color: rgba(15,18,20,0.72);
+  line-height: 1.55;
+}
+.leadForm{
+  margin-top: 12px;
+  display:flex;
+  gap: 10px;
+  align-items:center;
+}
+.leadInput{
+  flex:1;
+  min-width: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(15,18,20,0.12);
+  background: rgba(255,255,255,0.78);
+  padding: 11px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  outline: none;
+}
+.leadInput:focus{
+  border-color: rgba(255,77,0,0.35);
+  box-shadow: 0 0 0 6px rgba(255,77,0,0.10);
+}
+.leadBtn{
+  border-radius: 999px;
+  border: 1px solid rgba(15,18,20,0.12);
+  background: rgba(255,255,255,0.70);
+  padding: 11px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor:pointer;
+  transition: transform 220ms ease, border-color 220ms ease;
+  flex: 0 0 auto;
+}
+.leadBtn:hover{
+  transform: translateY(-1px);
+  border-color: rgba(255,77,0,0.35);
+}
+.leadStatus{
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: rgba(15,18,20,0.55);
+}
+.leadStatus[data-state="ok"]{ color: rgba(15,18,20,0.72); }
+.leadStatus[data-state="error"]{ color: rgba(160, 20, 20, 0.75); }
+.leadFine{
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(15,18,20,0.45);
 }
 
 .overlayFoot{
