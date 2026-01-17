@@ -9,6 +9,111 @@ const microHint = document.getElementById("microHint");
 
 const CONTACT_EMAIL = "admin@whimsycyberspace.com";
 
+// Lead capture (Google Sheets via Apps Script Web App)
+const LEAD_CAPTURE_URL =
+  "https://script.google.com/macros/s/AKfycbw7Zg2GY8dQBHRCvT9e-kdQCJ-MsQIUap7ZoU_rTkDZqoIS5ZJwSQvHVROoQD8n9aSFyA/exec";
+
+function leadFormHTML(sourceKey, opts = {}) {
+  const {
+    headline = "Stay in the loop",
+    copy = "Quiet correspondence. Only when something becomes real.",
+    placeholder = "email",
+    button = "enter",
+  } = opts;
+
+  return `
+    <div class="leadBox" role="group" aria-label="Stay in touch">
+      <div class="leadHead">${headline}</div>
+      <div class="leadCopy">${copy}</div>
+
+      <form class="leadForm" data-source="${sourceKey}" autocomplete="off">
+        <label class="srOnly" for="leadEmail_${sourceKey}">Email</label>
+        <input
+          id="leadEmail_${sourceKey}"
+          class="leadInput"
+          name="email"
+          type="email"
+          inputmode="email"
+          placeholder="${placeholder}"
+          required
+        />
+        <button class="leadBtn" type="submit">${button}</button>
+      </form>
+
+      <div class="leadStatus" aria-live="polite"></div>
+      <div class="leadFine">No spam. No funnels. Just release signals.</div>
+    </div>
+  `;
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim());
+}
+
+async function submitLead({ email, source }) {
+  if (!LEAD_CAPTURE_URL) throw new Error("Lead capture endpoint not configured.");
+
+  // Use text/plain to avoid CORS preflight issues
+  const res = await fetch(LEAD_CAPTURE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({
+      email,
+      source,
+      createdAt: new Date().toISOString(),
+    }),
+    redirect: "follow",
+  });
+
+  const text = await res.text();
+
+  if (!res.ok) {
+    throw new Error(`Request failed (${res.status}): ${text}`);
+  }
+
+  if (String(text).trim().toLowerCase() !== "ok") {
+    throw new Error(`Unexpected response: ${text}`);
+  }
+
+  return text;
+}
+
+function wireLeadForms(rootEl) {
+  rootEl.querySelectorAll(".leadForm").forEach((form) => {
+    const status = form.parentElement?.querySelector(".leadStatus");
+    const input = form.querySelector("input[name='email']");
+    if (!status || !input) return;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const email = String(input.value || "").trim();
+      const source = form.getAttribute("data-source") || "unknown";
+
+      if (!isValidEmail(email)) {
+        status.textContent = "That email looks off.";
+        status.setAttribute("data-state", "error");
+        return;
+      }
+
+      status.textContent = "sending…";
+      status.setAttribute("data-state", "pending");
+
+      try {
+        await submitLead({ email, source });
+        status.textContent = "received.";
+        status.setAttribute("data-state", "ok");
+        input.value = "";
+      } catch (err) {
+        console.error("Lead capture error:", err);
+        status.textContent = "Not connected yet.";
+        status.setAttribute("data-state", "error");
+      }
+    });
+  });
+}
+
 // Enter-cycle state
 let cycleIndex = -1;
 
@@ -46,7 +151,7 @@ function wireBroadwayZoom(rootEl) {
   const img = rootEl.querySelector(".broadwayImg");
   if (!frame || !img) return;
 
-  let scale = 1.65; // tweak 1.5–2.0 if you want
+  let scale = 1.65;
   let tx = 0;
   let ty = 0;
 
@@ -109,7 +214,6 @@ function wireBroadwayZoom(rootEl) {
     setVars();
   }
 
-  // Desktop hover behavior
   frame.addEventListener("mouseenter", () => {
     if (!isTouchDevice()) zoomOn();
   });
@@ -117,12 +221,10 @@ function wireBroadwayZoom(rootEl) {
     if (!isTouchDevice()) zoomOff();
   });
 
-  // Desktop mouse move
   frame.addEventListener("mousemove", (e) => {
     if (!isTouchDevice()) panTowardPointer(e.clientX, e.clientY);
   });
 
-  // Touch: tap toggles zoom
   frame.addEventListener("click", () => {
     if (!isTouchDevice()) return;
     isZoomed = !isZoomed;
@@ -133,7 +235,6 @@ function wireBroadwayZoom(rootEl) {
     setVars();
   });
 
-  // Drag (mouse + touch via pointer events)
   function onPointerDown(e) {
     if (!isZoomed) return;
     isDragging = true;
@@ -167,7 +268,9 @@ function wireBroadwayZoom(rootEl) {
   function onPointerUp(e) {
     if (!isZoomed) return;
     isDragging = false;
-    try { frame.releasePointerCapture(e.pointerId); } catch (_) {}
+    try {
+      frame.releasePointerCapture(e.pointerId);
+    } catch (_) {}
   }
 
   frame.addEventListener("pointerdown", onPointerDown);
@@ -206,17 +309,24 @@ const OBJECTS = [
       <p class="small">
         Status: in progress. Later this year it will be released independently via Amazon KDP.
       </p>
+
+      ${leadFormHTML("infinite_hotel", {
+        headline: "Leave an address",
+        copy: "If you want the key when the doors open.",
+        placeholder: "email",
+        button: "stay close",
+      })}
     `,
   },
-  // Replace ONLY this Broadway object inside OBJECTS (the one with key: "broadway")
-{
-  key: "broadway",
-  title: "Broadway",
-  meta: "a singular artifact · offers start at $27,000",
-  weight: 92,
-  overlayMeta:
-    "One-of-one mixed media painting created in April 2024. Includes an accompanying archive that transfers with the artwork.",
-  body: `
+
+  {
+    key: "broadway",
+    title: "Broadway",
+    meta: "a singular artifact · offers start at $27,000",
+    weight: 92,
+    overlayMeta:
+      "One-of-one mixed media painting created in April 2024. Includes an accompanying archive that transfers with the artwork.",
+    body: `
     <div class="tag"><span class="spark" aria-hidden="true"></span>artifact / archive</div>
 
     <div class="broadwayMedia" aria-label="Broadway painting">
@@ -276,8 +386,15 @@ const OBJECTS = [
         <a class="mailto" href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>
       </div>
     </div>
+
+    ${leadFormHTML("broadway", {
+      headline: "If Broadway moves",
+      copy: "If you want to know when the archive transfers. No noise.",
+      placeholder: "email",
+      button: "stay in touch",
+    })}
   `,
-},
+  },
 
   {
     key: "perspective_philosophy",
@@ -306,6 +423,13 @@ const OBJECTS = [
       <p class="small">
         Status: in progress. Later this year it will be released independently via Amazon KDP.
       </p>
+
+      ${leadFormHTML("perspective_philosophy", {
+        headline: "When it becomes real",
+        copy: "One message when it releases. Nothing else.",
+        placeholder: "email",
+        button: "stay close",
+      })}
     `,
   },
   {
@@ -434,6 +558,7 @@ function openRoom(key) {
 
   queueMicrotask(() => {
     wireMailtoLinks(overlayBody);
+    wireLeadForms(overlayBody);
 
     const broadway = overlayBody.querySelector(".broadwayMedia");
     if (broadway) wireBroadwayZoom(broadway);
