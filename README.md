@@ -1,54 +1,90 @@
-# Whimsy Cyberspace
+Whimsy Cyberspace
 
-A deliberately minimal digital environment.
+A weighted digital environment.
 
-Whimsy Cyberspace is not a content site and not a portfolio.
-It is a field containing a small number of authored objects:
-fiction, non-fiction, and physical artifacts.
+Whimsy Cyberspace is not a portfolio.
+It is not a content feed.
+It is not a landing page.
 
-Each object exists as a room.
-Each room can be entered, but not navigated traditionally.
+It is a field.
 
----
+Four authored directions exist within it:
+Broadway, Administrative, YouTube, and Human Texture.
 
-## Structure
+They are not listed.
+They are weighted.
 
-- **The Field**  
-  A spatial interface where objects are weighted, not ordered.
+Structure
+The Field
 
-- **Rooms**  
-  Overlays that contain the work itself:
-  - *The Infinite Hotel* — fiction as structure  
-  - *Broadway* — a one-of-one physical artifact  
-  - *Perspective Philosophy* — non-fiction distilled from lived writing
+A spatial interface where objects are positioned by weight, not hierarchy.
 
-- **No feeds. No funnels.**  
-  The site does not optimize for engagement or retention.
+Weight is not popularity.
+It is density.
+It is commitment.
+It is gravity.
 
----
+The Rooms
 
-## Correspondence
+Each object opens as a room.
 
-Some rooms include a quiet form for release notifications.
+Broadway
+A one-of-one physical artifact and origin archive.
+
+Administrative
+Applied systems, AI integration, and communication clarity for humans and businesses.
+
+YouTube
+Long-form depth. Essays on surface, systems, and perspective.
+
+Human Texture
+Applied research in mineral finishes, sustainable materials, Blue Zone longevity research, and modern life design.
+
+There is no navigation menu.
+Only entry.
+
+Philosophy
+
+No feeds.
+No funnels.
+No algorithmic optimization.
+
+The site does not chase attention.
+It holds position.
+
+Interaction is deliberate:
+Enter to step in.
+Enter again to cycle.
+Esc to exit.
+
+Correspondence
+
+Some rooms include a quiet release form.
+
 One message when something becomes real.
 Nothing else.
 
-Email submissions are stored privately via a serverless backend.
+Email submissions are stored privately via a serverless endpoint.
 
----
+Technology
 
-## Technology
+Static site (HTML / CSS / Vanilla JS)
 
-- Static site (HTML / CSS / Vanilla JS)
-- Deployed via Vercel
-- Source of truth: GitHub
-- Email capture: Google Apps Script → Google Sheets
+No frameworks
 
-No frameworks. No trackers. No analytics.
+No analytics
 
----
+No trackers
 
-## Authorship
+Deployed via Vercel
+
+Source of truth: GitHub
+
+Email capture: Google Apps Script → Google Sheets
+
+Authorship
 
 All work is authored by David Bacchus.
-The site is maintained as a living system, not a finished product.
+
+Whimsy Cyberspace is maintained as a living system.
+It is refined, not expanded.
