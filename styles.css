@@ -1,16 +1,17 @@
+/* styles.css */
 :root{
-  --bg: #f6f6f4;
-  --ink: rgba(15, 18, 20, 0.92);
-  --muted: rgba(15, 18, 20, 0.56);
-  --line: rgba(15, 18, 20, 0.10);
+  --bg: #f2f3f5;
+  --ink: rgba(10, 12, 14, 0.92);
+  --muted: rgba(10, 12, 14, 0.55);
+  --line: rgba(10, 12, 14, 0.08);
   --panel: rgba(255,255,255,0.58);
 
-  --accent: #ff4d00;
-  --glow: rgba(255, 77, 0, 0.18);
+  --accent: #e6ff00;
+  --glow: rgba(230,255,0,0.25);
 
   --radius: 18px;
-  --shadow: 0 18px 60px rgba(0,0,0,0.10);
-  --shadowSoft: 0 10px 40px rgba(0,0,0,0.08);
+  --shadow: 0 18px 60px rgba(0,0,0,0.12);
+  --shadowSoft: 0 10px 40px rgba(0,0,0,0.09);
   --blur: 14px;
 
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -24,8 +25,9 @@ body{
   font-family: var(--sans);
   color: var(--ink);
   background:
-    radial-gradient(1100px 750px at 16% 10%, rgba(255,77,0,0.06), transparent 58%),
-    radial-gradient(950px 700px at 82% 52%, rgba(0,0,0,0.06), transparent 60%),
+    radial-gradient(1200px 800px at 18% 12%, rgba(230,255,0,0.07), transparent 60%),
+    radial-gradient(1000px 780px at 78% 55%, rgba(0,0,0,0.06), transparent 62%),
+    linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.0) 40%),
     var(--bg);
   overflow-x:hidden;
 }
@@ -50,33 +52,54 @@ body{
   align-items:center;
   justify-content:space-between;
 
-  background: rgba(246,246,244,0.72);
+  background: rgba(242,243,245,0.72);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
-  border-bottom: 1px solid rgba(15,18,20,0.06);
+  border-bottom: 1px solid rgba(10,12,14,0.06);
 }
 
 .mark{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:12px;
   user-select:none;
 }
 
-.dot{
-  width:10px; height:10px;
-  border-radius:999px;
-  background: var(--accent);
-  box-shadow: 0 0 0 6px var(--glow);
+/* Logo restored */
+.logo{
+  width: 26px;
+  height: 26px;
+  display:block;
+  object-fit: contain;
+  border-radius: 8px;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.08));
 }
 
-.brandLogo{
-  height: 18px;
-  width: auto;
-  opacity: 0.88;
-  transform: translateY(-1px);
-  filter: drop-shadow(0 10px 28px rgba(0,0,0,0.10));
+/* Brand text */
+.brandText{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  line-height:1;
+}
+
+/* Top line: whimsy cyberspace */
+.brandName{
+  font-family: var(--mono);
+  letter-spacing: 0.10em;
+  font-size: 11px;
+  color: rgba(10,12,14,0.62);
+  text-transform: lowercase;
+}
+
+/* Bottom line: DAVID BACCHUS */
+.brandSub{
+  font-family: var(--mono);
+  letter-spacing: 0.16em;
+  font-size: 12px;
+  color: rgba(10,12,14,0.78);
+  text-transform: uppercase;
 }
 
 .topbarRight{ display:flex; align-items:center; gap:10px; }
@@ -85,26 +108,27 @@ body{
   font-family: var(--mono);
   font-size:12px;
   color: var(--muted);
-  background: transparent;
-  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.22);
+  border: 1px solid rgba(10,12,14,0.10);
   border-radius: 999px;
   padding: 10px 12px;
   cursor:pointer;
-  transition: transform 220ms ease, border-color 220ms ease, opacity 220ms ease;
+  transition: transform 220ms ease, border-color 220ms ease, opacity 220ms ease, background 220ms ease;
 }
 .quiet:hover{
   transform: translateY(-1px);
-  border-color: rgba(255,77,0,0.35);
+  border-color: rgba(230,255,0,0.55);
+  background: rgba(255,255,255,0.35);
 }
 
-/* Links (subtle) */
+/* Links */
 a{
-  color: rgba(20, 70, 210, 0.85);
+  color: rgba(15, 45, 160, 0.88);
   text-decoration: none;
-  border-bottom: 1px solid rgba(20, 70, 210, 0.20);
+  border-bottom: 1px solid rgba(15, 45, 160, 0.20);
 }
 a:hover{
-  border-bottom-color: rgba(20, 70, 210, 0.45);
+  border-bottom-color: rgba(15, 45, 160, 0.45);
 }
 
 /* Screen-reader only */
@@ -130,23 +154,25 @@ a:hover{
 
 /* Threshold */
 .threshold{
-  max-width: 760px;
+  max-width: 820px;
   padding: 14px 0 10px;
 }
 .anchorLine{
   margin:0;
-  font-weight: 560;
+  font-weight: 620;
   font-size: clamp(34px, 4.7vw, 54px);
   letter-spacing: -0.03em;
   line-height: 1.05;
 }
 .subLine{
   margin: 12px 0 14px;
-  color: rgba(15,18,20,0.72);
+  color: rgba(10,12,14,0.72);
   font-size: 16px;
   line-height: 1.65;
-  max-width: 52ch;
+  max-width: 58ch;
 }
+.soft{ color: rgba(10,12,14,0.55); }
+
 .microHint{
   display:inline-flex;
   flex-wrap: wrap;
@@ -154,16 +180,17 @@ a:hover{
   align-items:center;
   padding: 10px 12px;
   border-radius: 14px;
-  border: 1px dashed var(--line);
-  color: rgba(15,18,20,0.50);
+  border: 1px dashed rgba(10,12,14,0.14);
+  color: rgba(10,12,14,0.50);
   font-family: var(--mono);
   font-size: 12px;
+  background: rgba(255,255,255,0.22);
 }
 .microKey{
   display:inline-block;
   padding: 2px 8px;
   border-radius: 999px;
-  border: 1px solid rgba(15,18,20,0.12);
+  border: 1px solid rgba(10,12,14,0.12);
   background: rgba(255,255,255,0.55);
 }
 
@@ -173,29 +200,30 @@ a:hover{
   margin-top: 34px;
   height: min(560px, 66vh);
   border-radius: 24px;
-  border: 1px solid rgba(15,18,20,0.08);
-  background: rgba(255,255,255,0.34);
-  backdrop-filter: blur(10px);
+  border: 1px solid rgba(10,12,14,0.10);
+  background: rgba(255,255,255,0.26);
+  backdrop-filter: blur(12px);
   box-shadow: var(--shadowSoft);
   overflow:hidden;
 }
-
 .field::before{
   content:"";
   position:absolute;
   inset:-30%;
-  background:
-    radial-gradient(circle at 22% 30%, rgba(255,77,0,0.09), transparent 45%),
-    radial-gradient(circle at 75% 60%, rgba(0,0,0,0.06), transparent 48%);
-  opacity:0.7;
+  z-index: 0;
   pointer-events:none;
+  background:
+    radial-gradient(circle at 22% 30%, rgba(230,255,0,0.09), transparent 45%),
+    radial-gradient(circle at 75% 60%, rgba(0,0,0,0.06), transparent 48%);
+  opacity:0.75;
 }
-
 .object{
   position:absolute;
+  z-index: 2;
+
   border-radius: var(--radius);
-  border: 1px solid var(--line);
-  background: var(--panel);
+  border: 1px solid rgba(10,12,14,0.10);
+  background: rgba(255,255,255,0.62);
   backdrop-filter: blur(var(--blur));
   box-shadow: var(--shadowSoft);
   padding: 14px 14px 12px;
@@ -206,20 +234,20 @@ a:hover{
   transition: transform 260ms ease, border-color 260ms ease, box-shadow 260ms ease, opacity 260ms ease;
   overflow:hidden;
 }
-
 .object::after{
   content:"";
   position:absolute;
   inset:-40%;
+  z-index: 0;
   background: radial-gradient(circle at var(--mx, 30%) var(--my, 30%), var(--glow), transparent 45%);
   opacity:0.0;
   transition: opacity 240ms ease;
   pointer-events:none;
 }
-
+.object > *{ position: relative; z-index: 1; }
 .object:hover{
   transform: translateY(-2px);
-  border-color: rgba(255,77,0,0.35);
+  border-color: rgba(230,255,0,0.55);
   box-shadow: var(--shadow);
 }
 .object:hover::after{ opacity:1; }
@@ -234,14 +262,14 @@ a:hover{
   margin-top: 6px;
   font-family: var(--mono);
   font-size: 12px;
-  color: rgba(15,18,20,0.55);
+  color: rgba(10,12,14,0.55);
 }
 .objWeight{
   margin-top: 10px;
   display:flex;
   align-items:center;
   gap:10px;
-  color: rgba(15,18,20,0.55);
+  color: rgba(10,12,14,0.55);
   font-family: var(--mono);
   font-size: 11px;
 }
@@ -250,20 +278,19 @@ a:hover{
   height: 6px;
   flex:1;
   border-radius: 999px;
-  background: rgba(15,18,20,0.08);
+  background: rgba(10,12,14,0.08);
   overflow:hidden;
 }
 .weightFill{
   height: 100%;
   width: var(--w, 55%);
   border-radius: 999px;
-  background: rgba(255,77,0,0.65);
-  box-shadow: 0 0 0 6px rgba(255,77,0,0.08);
+  background: var(--accent);
+  box-shadow: 0 0 0 6px rgba(230,255,0,0.12);
 }
-
 .object.pulse{
   transform: translateY(-2px) scale(1.01);
-  border-color: rgba(255,77,0,0.40);
+  border-color: rgba(230,255,0,0.65);
 }
 
 /* Overlay */
@@ -274,17 +301,16 @@ a:hover{
   align-items:flex-end;
   justify-content:center;
   padding: 22px;
-  background: rgba(10,12,14,0.25);
-  backdrop-filter: blur(10px);
+  background: rgba(8,10,12,0.30);
+  backdrop-filter: blur(12px);
   z-index:40;
 }
 .overlay[data-open="true"]{ display:flex; }
-
 .overlayCard{
   width:min(920px, 100%);
   border-radius: 22px;
   border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.72);
+  background: rgba(255,255,255,0.74);
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
   overflow:hidden;
@@ -303,38 +329,43 @@ a:hover{
   justify-content:space-between;
   gap: 16px;
   padding: 16px 18px;
-  border-bottom: 1px solid rgba(15,18,20,0.08);
+  border-bottom: 1px solid rgba(10,12,14,0.08);
   flex: 0 0 auto;
 }
 .overlayNameWrap{ display:flex; flex-direction:column; gap:6px; }
 .overlayName{
   font-size: 13px;
   font-family: var(--mono);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform:uppercase;
-  color: rgba(15,18,20,0.62);
+  color: rgba(10,12,14,0.62);
 }
 .overlayMeta{
   font-size: 13px;
-  color: rgba(15,18,20,0.70);
+  color: rgba(10,12,14,0.70);
   line-height: 1.45;
-  max-width: 62ch;
+  max-width: 66ch;
 }
 .close{
   font-family: var(--mono);
   font-size: 12px;
-  background: transparent;
-  border: 1px solid rgba(15,18,20,0.12);
+  background: rgba(255,255,255,0.25);
+  border: 1px solid rgba(10,12,14,0.12);
   border-radius: 999px;
   padding: 9px 12px;
   cursor:pointer;
   flex: 0 0 auto;
+  transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
 }
-.close:hover{ border-color: rgba(255,77,0,0.35); }
+.close:hover{
+  border-color: rgba(230,255,0,0.55);
+  background: rgba(255,255,255,0.40);
+  transform: translateY(-1px);
+}
 
 .overlayBody{
   padding: 18px 18px 10px;
-  color: rgba(15,18,20,0.82);
+  color: rgba(10,12,14,0.84);
   line-height: 1.72;
   font-size: 16px;
   overflow:auto;
@@ -343,7 +374,7 @@ a:hover{
 
 .block{
   padding: 14px 14px;
-  border: 1px solid rgba(15,18,20,0.10);
+  border: 1px solid rgba(10,12,14,0.10);
   border-radius: 16px;
   background: rgba(255,255,255,0.55);
   margin: 12px 0;
@@ -354,9 +385,9 @@ a:hover{
   gap:8px;
   font-family: var(--mono);
   font-size: 12px;
-  color: rgba(15,18,20,0.55);
+  color: rgba(10,12,14,0.55);
   padding: 8px 10px;
-  border: 1px solid rgba(15,18,20,0.10);
+  border: 1px solid rgba(10,12,14,0.10);
   border-radius: 999px;
   background: rgba(255,255,255,0.60);
 }
@@ -364,19 +395,19 @@ a:hover{
   width:8px; height:8px;
   border-radius:999px;
   background: var(--accent);
-  box-shadow: 0 0 0 6px var(--glow);
+  box-shadow: 0 0 0 7px var(--glow);
 }
 .callout{
   padding: 12px 14px;
   border-radius: 16px;
-  border: 1px solid rgba(255,77,0,0.25);
-  background: rgba(255,77,0,0.06);
+  border: 1px solid rgba(230,255,0,0.35);
+  background: rgba(230,255,0,0.08);
   margin: 14px 0 10px;
 }
 .small{
   font-family: var(--mono);
   font-size: 12px;
-  color: rgba(15,18,20,0.55);
+  color: rgba(10,12,14,0.55);
 }
 
 /* Lead capture */
@@ -384,7 +415,7 @@ a:hover{
   margin: 18px 0 8px;
   padding: 14px 14px 12px;
   border-radius: 18px;
-  border: 1px solid rgba(15,18,20,0.10);
+  border: 1px solid rgba(10,12,14,0.10);
   background: rgba(255,255,255,0.56);
 }
 .leadHead{
@@ -392,12 +423,12 @@ a:hover{
   font-size: 12px;
   letter-spacing: 0.10em;
   text-transform: uppercase;
-  color: rgba(15,18,20,0.62);
+  color: rgba(10,12,14,0.62);
 }
 .leadCopy{
   margin-top: 8px;
   font-size: 14px;
-  color: rgba(15,18,20,0.72);
+  color: rgba(10,12,14,0.72);
   line-height: 1.55;
 }
 .leadForm{
@@ -410,7 +441,7 @@ a:hover{
   flex:1;
   min-width: 0;
   border-radius: 999px;
-  border: 1px solid rgba(15,18,20,0.12);
+  border: 1px solid rgba(10,12,14,0.12);
   background: rgba(255,255,255,0.78);
   padding: 11px 14px;
   font-family: var(--mono);
@@ -418,12 +449,12 @@ a:hover{
   outline: none;
 }
 .leadInput:focus{
-  border-color: rgba(255,77,0,0.35);
-  box-shadow: 0 0 0 6px rgba(255,77,0,0.10);
+  border-color: rgba(230,255,0,0.55);
+  box-shadow: 0 0 0 7px rgba(230,255,0,0.12);
 }
 .leadBtn{
   border-radius: 999px;
-  border: 1px solid rgba(15,18,20,0.12);
+  border: 1px solid rgba(10,12,14,0.12);
   background: rgba(255,255,255,0.70);
   padding: 11px 14px;
   font-family: var(--mono);
@@ -434,21 +465,21 @@ a:hover{
 }
 .leadBtn:hover{
   transform: translateY(-1px);
-  border-color: rgba(255,77,0,0.35);
+  border-color: rgba(230,255,0,0.55);
 }
 .leadStatus{
   margin-top: 10px;
   font-family: var(--mono);
   font-size: 12px;
-  color: rgba(15,18,20,0.55);
+  color: rgba(10,12,14,0.55);
 }
-.leadStatus[data-state="ok"]{ color: rgba(15,18,20,0.72); }
+.leadStatus[data-state="ok"]{ color: rgba(10,12,14,0.72); }
 .leadStatus[data-state="error"]{ color: rgba(160, 20, 20, 0.75); }
 .leadFine{
   margin-top: 8px;
   font-family: var(--mono);
   font-size: 11px;
-  color: rgba(15,18,20,0.45);
+  color: rgba(10,12,14,0.45);
 }
 
 .overlayFoot{
@@ -456,7 +487,7 @@ a:hover{
   align-items:center;
   justify-content:space-between;
   padding: 14px 18px 16px;
-  border-top: 1px solid rgba(15,18,20,0.08);
+  border-top: 1px solid rgba(10,12,14,0.08);
   flex: 0 0 auto;
 }
 .sig{
@@ -464,34 +495,32 @@ a:hover{
   letter-spacing:0.22em;
   text-transform:uppercase;
   font-size: 11px;
-  color: rgba(15,18,20,0.45);
+  color: rgba(10,12,14,0.45);
 }
 .footnote{
   font-family: var(--mono);
   font-size: 11px;
-  color: rgba(15,18,20,0.45);
+  color: rgba(10,12,14,0.45);
 }
 
-/* Broadway: zoom + pan + drag */
+/* Broadway zoom */
 .broadwayMedia{
   margin: 14px 0 12px;
   position: relative;
   user-select: none;
 }
-
 .broadwayMedia::before{
   content:"";
   position:absolute;
   inset:-3px;
   border-radius: 18px;
   background: rgba(255,255,255,0.16);
-  border: 1px solid rgba(15,18,20,0.10);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+  border: 1px solid rgba(10,12,14,0.10);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   pointer-events:none;
-  opacity: 0.85;
+  opacity: 0.90;
   transition: opacity 240ms ease, transform 240ms ease, border-color 240ms ease;
 }
-
 .broadwayFrame{
   position: relative;
   border-radius: 16px;
@@ -502,7 +531,6 @@ a:hover{
   cursor: grab;
   touch-action: none;
 }
-
 .broadwayImg{
   position:absolute;
   inset:0;
@@ -514,21 +542,18 @@ a:hover{
 
   transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) scale(var(--s, 1));
   transition: transform 220ms ease, filter 220ms ease;
-  filter: saturate(1.02) contrast(1.02);
+  filter: saturate(1.02) contrast(1.03);
   will-change: transform;
 }
-
 .broadwayFrame.is-zoomed .broadwayImg{
   object-fit: cover;
-  filter: saturate(1.04) contrast(1.04);
+  filter: saturate(1.05) contrast(1.05);
 }
-
 .broadwayFrame:active{ cursor: grabbing; }
-
 .broadwayMedia:hover::before{
   opacity: 1;
   transform: translateY(-1px);
-  border-color: rgba(255,77,0,0.18);
+  border-color: rgba(230,255,0,0.22);
 }
 
 /* Hush mode */
@@ -552,7 +577,6 @@ body[data-hush="true"] .objMeta{ opacity:0.38; }
     height: clamp(240px, 30vh, 380px);
   }
 
-  /* Fix iOS Safari top-chop: center modal in the true visible viewport */
   .overlay{
     align-items: center;
     padding:
@@ -560,22 +584,19 @@ body[data-hush="true"] .objMeta{ opacity:0.38; }
       14px
       calc(env(safe-area-inset-bottom) + 14px);
   }
-
   .overlayCard{
     width: 100%;
     max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 28px);
     border-radius: 20px;
   }
-
   .overlayTop{
     position: sticky;
     top: 0;
-    background: rgba(255,255,255,0.78);
+    background: rgba(255,255,255,0.80);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     z-index: 2;
   }
-
   .overlayBody{
     -webkit-overflow-scrolling: touch;
   }
