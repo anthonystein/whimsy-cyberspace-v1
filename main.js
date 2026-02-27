@@ -683,3 +683,4 @@ if (microHint && isTouchDevice()) {
 }
 
 buildField();
+buildField();
