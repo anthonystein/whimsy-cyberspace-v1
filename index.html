@@ -1,24 +1,22 @@
-<!-- index.html -->
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#f2f3f5" />
+    <meta name="theme-color" content="#f2f4f7" />
     <title>Whimsy Cyberspace</title>
     <meta
       name="description"
-      content="Whimsy Cyberspace: Broadway, Administrative, YouTube, Human Texture."
+      content="Whimsy Cyberspace: Broadway, Practice, YouTube, Sustainable Design Research & Development."
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
 
-  <body data-hush="false">
+  <body data-hush="false" data-world="threshold">
     <div class="grain" aria-hidden="true"></div>
 
     <header class="topbar" role="banner">
-      <div class="mark" aria-label="Site mark">
-        <!-- Logo is back -->
+      <button id="brandBtn" class="mark" type="button" aria-label="Home">
         <img
           class="logo"
           src="/assets/Whimsy Cyberspace Cross Heading.png"
@@ -26,11 +24,9 @@
         />
 
         <div class="brandText">
-          <!-- Purple box requirement: Whimsy Cyberspace on top, David Bacchus underneath -->
-          <div class="brandName">WHIMSY CYBERSPACE</div>
-          <div class="brandSub">david bacchus</div>
+          <div id="brandName" class="brandName">WHIMSY CYBERSPACE</div>
         </div>
-      </div>
+      </button>
 
       <div class="topbarRight">
         <button
@@ -46,11 +42,14 @@
 
     <main class="world" role="main">
       <section class="threshold" aria-label="Threshold">
-        <h1 class="anchorLine">Enter by weight.</h1>
+        <h1 class="anchorLine">Nothing here is trying to convince you.</h1>
+
         <p class="subLine">
-          Four rooms. One identity. Different depth.
+          Enter slowly. If something belongs to you, it will stay with you.
+          <br />
           <span class="soft">Tap or press Enter to step in.</span>
         </p>
+
         <div id="microHint" class="microHint" aria-label="Interaction hint">
           <span class="microKey">enter</span> to step in ·
           <span class="microKey">enter</span> again to cycle ·
@@ -92,7 +91,7 @@
         <div id="overlayBody" class="overlayBody"></div>
 
         <div class="overlayFoot">
-          <div class="sig">DB</div>
+          <div class="sig">WC</div>
           <div class="footnote">Esc closes. Enter cycles.</div>
         </div>
       </div>
