@@ -1,4 +1,3 @@
-// main.js
 const field = document.getElementById("field");
 const overlay = document.getElementById("overlay");
 const overlayName = document.getElementById("overlayName");
@@ -7,6 +6,9 @@ const overlayBody = document.getElementById("overlayBody");
 const closeOverlay = document.getElementById("closeOverlay");
 const toggleHush = document.getElementById("toggleHush");
 const microHint = document.getElementById("microHint");
+
+const brandBtn = document.getElementById("brandBtn");
+const brandNameEl = document.getElementById("brandName");
 
 const CONTACT_EMAIL = "admin@whimsycyberspace.com";
 const YOUTUBE_URL = "https://www.youtube.com/@DavidBacchusX";
@@ -130,6 +132,7 @@ function wireExternalLinks(rootEl) {
   });
 }
 
+/* Broadway: zoom + pan */
 function wireBroadwayZoom(rootEl) {
   const frame = rootEl.querySelector(".broadwayFrame");
   const img = rootEl.querySelector(".broadwayImg");
@@ -270,6 +273,7 @@ function wireBroadwayZoom(rootEl) {
   setVars();
 }
 
+/* Rooms */
 const OBJECTS = [
   {
     key: "broadway",
@@ -294,12 +298,12 @@ const OBJECTS = [
       </div>
 
       <p class="block">
-        Broadway marks the moment expression overtook suppression.
+        Broadway was the first time I stopped holding something in.
       </p>
 
       <p>
-        Created late at night inside the warehouse of a functioning paint store.
-        The materials were not symbolic, they were literal: red wine, mis-tinted limewash, and architectural coatings pulled from the artist’s daily environment.
+        Painted late at night in the back warehouse of a functioning paint store.
+        Red wine. Mis-tinted limewash. Architectural coatings pulled from the daily environment.
       </p>
 
       <p class="block">
@@ -338,16 +342,16 @@ const OBJECTS = [
 
   {
     key: "admin",
-    title: "Administrative",
+    title: "Practice",
     meta: "systems · ai · communication",
     weight: 78,
     overlayMeta:
-      "Deliberate operations. Helping humans and businesses understand, implement, and refine systems through AI, clarity, and communication.",
+      "Deliberate operations. Helping humans and businesses map reality, reduce noise, and build systems that hold.",
     body: `
-      <div class="tag"><span class="spark" aria-hidden="true"></span>systems</div>
+      <div class="tag"><span class="spark" aria-hidden="true"></span>practice</div>
 
       <p class="block">
-        Administrative is applied clarity.
+        Practice is applied clarity.
       </p>
 
       <p>
@@ -364,7 +368,7 @@ const OBJECTS = [
       </p>
 
       ${leadFormHTML("admin", {
-        headline: "Administrative notes",
+        headline: "Practice notes",
         copy: "Occasional releases, tools, and system drops.",
         placeholder: "email",
         button: "enter",
@@ -403,20 +407,20 @@ const OBJECTS = [
 
   {
     key: "human_texture",
-    title: "Human Texture",
-    meta: "applied research · life design",
+    title: "Sustainable Design Research & Development",
+    meta: "materials · longevity · fieldwork",
     weight: 88,
     overlayMeta:
       "Mineral finishes, sustainable material systems, Blue Zone longevity research, and modern life architecture.",
     body: `
-      <div class="tag"><span class="spark" aria-hidden="true"></span>research</div>
+      <div class="tag tagGreen"><span class="spark sparkGreen" aria-hidden="true"></span>research</div>
 
       <p class="block">
-        Human Texture began as Sustainable Design R&D.
+        Sustainable Design Research & Development is an applied inquiry.
       </p>
 
       <p>
-        It now integrates:
+        It integrates:
         <br/>• mineral finishes and surface behavior
         <br/>• sustainable material systems
         <br/>• Blue Zone longevity research
@@ -429,11 +433,11 @@ const OBJECTS = [
       </p>
 
       <p class="small">
-        Broadway funds the first applied phase.
+        Blue Zone research is funded by Broadway.
       </p>
 
       ${leadFormHTML("human_texture", {
-        headline: "Human Texture",
+        headline: "Sustainable Design R&D",
         copy: "When research becomes real, you will know.",
         placeholder: "email",
         button: "stay close",
@@ -472,6 +476,10 @@ function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
+function setWorld(worldKey) {
+  document.body.setAttribute("data-world", worldKey || "threshold");
+}
+
 function openRoom(key) {
   const obj = OBJECTS.find((o) => o.key === key);
   if (!obj) return;
@@ -479,6 +487,8 @@ function openRoom(key) {
   overlayName.textContent = obj.title.toUpperCase();
   overlayMeta.textContent = obj.overlayMeta;
   overlayBody.innerHTML = obj.body;
+
+  setWorld(key);
 
   queueMicrotask(() => {
     wireMailtoLinks(overlayBody);
@@ -503,6 +513,7 @@ function closeRoom() {
   overlay.dataset.open = "false";
   overlay.setAttribute("aria-hidden", "true");
   document.body.style.overflow = "";
+  setWorld("threshold");
 }
 
 function buildField() {
@@ -576,14 +587,12 @@ function buildField() {
       btn.style.setProperty("--my", `${my}%`);
     });
 
-    // Defensive: pointerup is more reliable than click in some stacks
     btn.addEventListener("pointerup", (e) => {
       e.preventDefault();
       e.stopPropagation();
       openRoom(obj.key);
     });
 
-    // Also keep click for older browsers
     btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -608,7 +617,6 @@ closeOverlay.addEventListener("click", (e) => {
   closeRoom();
 });
 
-// Close only when clicking the backdrop itself, and do not let any inner clicks bubble to it
 overlay.addEventListener("pointerup", (e) => {
   if (e.target === overlay) {
     e.preventDefault();
@@ -656,6 +664,7 @@ window.addEventListener("resize", () => {
   resizeTimer = setTimeout(buildField, 120);
 });
 
+/* Hint behavior on touch */
 if (microHint && isTouchDevice()) {
   microHint.style.cursor = "pointer";
   microHint.title = "Tap to step in";
@@ -682,5 +691,58 @@ if (microHint && isTouchDevice()) {
   });
 }
 
-buildField();
+/* Brand hover easter egg */
+const BRAND_BASE = "WHIMSY CYBERSPACE";
+const BRAND_ALTS = [
+  "BROADWAY",
+  "PRACTICE",
+  "YOUTUBE",
+  "SUSTAINABLE DESIGN R&D",
+];
+
+let brandHoverTimer = null;
+
+function setBrandText(txt) {
+  if (!brandNameEl) return;
+  brandNameEl.textContent = txt;
+}
+
+function randAlt() {
+  return BRAND_ALTS[Math.floor(Math.random() * BRAND_ALTS.length)];
+}
+
+if (brandBtn && brandNameEl) {
+  brandBtn.addEventListener("mouseenter", () => {
+    clearInterval(brandHoverTimer);
+    setBrandText(randAlt());
+    brandHoverTimer = setInterval(() => {
+      setBrandText(randAlt());
+    }, 820);
+  });
+
+  brandBtn.addEventListener("mouseleave", () => {
+    clearInterval(brandHoverTimer);
+    brandHoverTimer = null;
+    setBrandText(BRAND_BASE);
+  });
+
+  brandBtn.addEventListener("focus", () => {
+    clearInterval(brandHoverTimer);
+    setBrandText(randAlt());
+  });
+
+  brandBtn.addEventListener("blur", () => {
+    clearInterval(brandHoverTimer);
+    brandHoverTimer = null;
+    setBrandText(BRAND_BASE);
+  });
+
+  brandBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (overlay.dataset.open === "true") closeRoom();
+    document.querySelector(".threshold")?.scrollIntoView({ behavior: "smooth" });
+  });
+}
+
 buildField();
