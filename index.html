@@ -1,102 +1,202 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#f2f4f7" />
-    <title>Whimsy Cyberspace</title>
-    <meta
-      name="description"
-      content="Whimsy Cyberspace: Broadway, Practice, YouTube, Sustainable Design Research & Development."
-    />
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hidden Infrastructure | Whimsy Cyberspace</title>
+  <meta name="description" content="Whimsy Cyberspace reveals, organizes, and amplifies the hidden infrastructure inside real businesses.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
 
-  <body data-hush="false" data-world="threshold">
-    <div class="grain" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="#top"><span class="brand-mark">?</span> Whimsy Cyberspace</a>
+    <nav>
+      <a href="#condition">The problem</a>
+      <a href="#method">The method</a>
+      <a href="#implementation">Live work</a>
+      <a href="#contribute">Contribute</a>
+      <a class="nav-cta" href="project.html">Open project map <span>?</span></a>
+    </nav>
+  </header>
 
-    <header class="topbar" role="banner">
-      <button id="brandBtn" class="mark" type="button" aria-label="Home">
-        <img
-          class="logo"
-          src="/assets/Whimsy Cyberspace Cross Heading.png"
-          alt="Whimsy Cyberspace mark"
-        />
-
-        <div class="brandText">
-          <div id="brandName" class="brandName">WHIMSY CYBERSPACE</div>
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy reveal">
+        <div class="eyebrow">Hidden Infrastructure / A Whimsy Cyberspace project</div>
+        <h1>Every business already has a system.</h1>
+        <p class="hero-lead">It lives in conversations, habits, spreadsheets, workarounds, documents, and the people who quietly keep everything moving.</p>
+        <p class="hero-belief">We are not reinventing the wheel. We are amplifying the process.</p>
+        <div class="hero-actions">
+          <a class="button primary pulse-link" href="#condition">See what we reveal <span>?</span></a>
+          <a class="button blueprint-link" href="project.html">Explore the public project map <span>?</span></a>
         </div>
-      </button>
-
-      <div class="topbarRight">
-        <button
-          id="toggleHush"
-          class="quiet"
-          type="button"
-          aria-label="Toggle hush mode"
-        >
-          hush
-        </button>
       </div>
-    </header>
 
-    <main class="world" role="main">
-      <section class="threshold" aria-label="Threshold">
-        <h1 class="anchorLine">Nothing here is trying to convince you.</h1>
+      <div class="blueprint-machine reveal" aria-label="Abstract blueprint mechanism">
+        <div class="bp-label label-a">knowledge</div>
+        <div class="bp-label label-b">movement</div>
+        <div class="bp-label label-c">visibility</div>
+        <div class="gear gear-one"><span></span><span></span><span></span><span></span><i></i></div>
+        <div class="gear gear-two"><span></span><span></span><span></span><span></span><i></i></div>
+        <div class="gear gear-three"><span></span><span></span><span></span><span></span><i></i></div>
+        <div class="measure-line m1"></div><div class="measure-line m2"></div><div class="measure-line m3"></div>
+        <div class="machine-note">Three visible connections can change the speed of the whole system.</div>
+      </div>
 
-        <p class="subLine">
-          Enter slowly. If something belongs to you, it will stay with you.
-          <br />
-          <span class="soft">Tap or press Enter to step in.</span>
-        </p>
+      <div class="scroll-cue">Scroll to reveal the system <span></span></div>
+    </section>
 
-        <div id="microHint" class="microHint" aria-label="Interaction hint">
-          <span class="microKey">enter</span> to step in ·
-          <span class="microKey">enter</span> again to cycle ·
-          <span class="microKey">esc</span> to exit
+    <section id="condition" class="section shell">
+      <div class="section-label reveal">01 / The condition</div>
+      <div class="split-head reveal">
+        <h2>Good businesses often run on invisible effort.</h2>
+        <p>A business can look functional from the outside while depending on memory, heroics, and repeated correction behind the scenes. The work gets done, but the process never gets stronger.</p>
+      </div>
+
+      <div class="problem-map">
+        <article class="system-node reveal" data-symbol="?">
+          <span class="node-number">01</span>
+          <div class="node-symbol">?</div>
+          <h3>Knowledge hides</h3>
+          <p>The answer exists, but only the right person knows where.</p>
+          <small>Signal: dependency</small>
+        </article>
+        <article class="system-node reveal" data-symbol="?">
+          <span class="node-number">02</span>
+          <div class="node-symbol">?</div>
+          <h3>Work loops</h3>
+          <p>The same questions, corrections, and handoffs return every day.</p>
+          <small>Signal: repetition</small>
+        </article>
+        <article class="system-node reveal" data-symbol="?">
+          <span class="node-number">03</span>
+          <div class="node-symbol">?</div>
+          <h3>Tools arrive early</h3>
+          <p>Software is added before anyone maps what the work is trying to do.</p>
+          <small>Signal: noise</small>
+        </article>
+        <article class="system-node reveal" data-symbol="?">
+          <span class="node-number">04</span>
+          <div class="node-symbol">?</div>
+          <h3>Growth adds weight</h3>
+          <p>More people and more platforms create complexity instead of capacity.</p>
+          <small>Signal: friction</small>
+        </article>
+      </div>
+    </section>
+
+    <section class="statement-band">
+      <div class="shell reveal">
+        <p>Every business already knows how to become better.</p>
+        <h2>Most have not organized what they know.</h2>
+      </div>
+    </section>
+
+    <section id="method" class="section shell">
+      <div class="section-label reveal">02 / The method</div>
+      <div class="split-head reveal">
+        <h2>Technical imagination, made practical.</h2>
+        <p>Whimsy Cyberspace looks at a business as a living system. We study what is already happening, find the missing connections, and build only what makes the whole move better.</p>
+      </div>
+
+      <div class="method-track">
+        <article class="method-step reveal"><span>01</span><div class="method-icon">?</div><h3>Observe</h3><p>Watch how the work behaves in real life.</p></article>
+        <div class="track-line"></div>
+        <article class="method-step reveal"><span>02</span><div class="method-icon">?</div><h3>Reveal</h3><p>Name the pattern that everyone feels but nobody sees.</p></article>
+        <div class="track-line"></div>
+        <article class="method-step reveal"><span>03</span><div class="method-icon">?</div><h3>Organize</h3><p>Give information, responsibility, and decisions a clear place.</p></article>
+        <div class="track-line"></div>
+        <article class="method-step reveal"><span>04</span><div class="method-icon">?</div><h3>Amplify</h3><p>Strengthen what already works instead of replacing it blindly.</p></article>
+        <div class="track-line"></div>
+        <article class="method-step reveal"><span>05</span><div class="method-icon">?</div><h3>Repeat</h3><p>Measure the result, learn, and tighten the system again.</p></article>
+      </div>
+
+      <div class="method-callout reveal">
+        <span class="callout-symbol">?</span>
+        <div><small>The rule</small><p>Clarity comes before software. Automation is a consequence, not the starting point.</p></div>
+      </div>
+    </section>
+
+    <section id="implementation" class="section shell implementation">
+      <div class="section-label reveal">03 / Current implementation</div>
+      <div class="implementation-grid">
+        <div class="reveal">
+          <div class="project-kicker">Hidden Infrastructure 001</div>
+          <h2>A live operating system for an independent retailer.</h2>
+          <p class="lead">Primetime Paint & Paper is where the theory meets the counter, the phone, the inbox, the warehouse, the website, and the customer.</p>
+          <p>Primetime is the live environment. Whimsy Cyberspace is the architecture layer. Together, they expose what the business already knows, turn that knowledge into usable systems, and test whether the company becomes easier to operate without losing its humanity.</p>
+          <a class="mega-link" href="project.html"><span>Explore the public project map</span><b>?</b><small>See the five layers, open missions, and contribution funnel</small></a>
         </div>
-      </section>
 
-      <section id="field" class="field" aria-label="Room field"></section>
-    </main>
-
-    <section
-      id="overlay"
-      class="overlay"
-      data-open="false"
-      aria-hidden="true"
-      aria-label="Room overlay"
-    >
-      <div
-        class="overlayCard"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Room"
-      >
-        <div class="overlayTop">
-          <div class="overlayNameWrap">
-            <div id="overlayName" class="overlayName">ROOM</div>
-            <div id="overlayMeta" class="overlayMeta"></div>
-          </div>
-          <button
-            id="closeOverlay"
-            class="close"
-            type="button"
-            aria-label="Close room"
-          >
-            close
-          </button>
-        </div>
-
-        <div id="overlayBody" class="overlayBody"></div>
-
-        <div class="overlayFoot">
-          <div class="sig">WC</div>
-          <div class="footnote">Esc closes. Enter cycles.</div>
+        <div class="system-wheel reveal">
+          <div class="wheel-core"><span>AMPLIFY</span><small>the process</small></div>
+          <a href="project.html#memory" class="wheel-node w1"><span>01</span>Business memory</a>
+          <a href="project.html#movement" class="wheel-node w2"><span>02</span>Work movement</a>
+          <a href="project.html#access" class="wheel-node w3"><span>03</span>Customer access</a>
+          <a href="project.html#visibility" class="wheel-node w4"><span>04</span>Business visibility</a>
+          <a href="project.html#automation" class="wheel-node w5"><span>05</span>Selective automation</a>
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
         </div>
       </div>
     </section>
 
-    <script src="./main.js" defer></script>
-  </body>
+    <section class="section shell observatory">
+      <div class="section-label reveal">04 / Observatory log</div>
+      <div class="log-grid">
+        <article class="log-entry reveal"><small>Observation 017</small><h3>Information should not disappear because someone went home.</h3><p>Business memory should belong to the business, not only to the person who remembers it.</p></article>
+        <article class="log-entry reveal"><small>Pattern 006</small><h3>The same interruption is usually a missing system asking to be seen.</h3><p>Repeated friction is not background noise. It is a design brief.</p></article>
+        <article class="log-entry reveal"><small>Amplification 003</small><h3>Three well placed gears can make the whole machine beat faster.</h3><p>The aim is not maximum technology. It is maximum useful connection.</p></article>
+      </div>
+    </section>
+
+    <section id="contribute" class="section shell contribute">
+      <div class="contribute-copy reveal">
+        <div class="section-label">05 / Enter the work</div>
+        <h2>Thinkers enter through action.</h2>
+        <p class="lead">You do not need the perfect title. You need to notice something real, choose a piece you can move, and show how you would begin.</p>
+        <div class="contribution-prompts">
+          <div><span>?</span><p>What part of the system do you notice first?</p></div>
+          <div><span>?</span><p>What would you make clearer within one week?</p></div>
+          <div><span>?</span><p>What have you built, repaired, organized, or challenged before?</p></div>
+        </div>
+      </div>
+
+      <form class="contribution-form reveal" action="https://formsubmit.co/your-email@example.com" method="POST">
+        <input type="hidden" name="_subject" value="Hidden Infrastructure contribution">
+        <input type="hidden" name="_captcha" value="false">
+        <div class="form-head"><span>Open signal</span><small>Deeper context follows useful thought.</small></div>
+        <label>Name<input type="text" name="name" required></label>
+        <label>Email<input type="email" name="email" required></label>
+        <label>Which layer pulls you in?
+          <select name="layer" required>
+            <option value="">Choose a layer</option>
+            <option>Business memory</option>
+            <option>Work movement</option>
+            <option>Customer access</option>
+            <option>Business visibility</option>
+            <option>Selective automation</option>
+            <option>Systems architecture</option>
+          </select>
+        </label>
+        <label>What problem do you see?<textarea name="observation" rows="4" required></textarea></label>
+        <label>What would you do first?<textarea name="first_move" rows="4" required></textarea></label>
+        <label>Show something relevant<textarea name="evidence" rows="3" placeholder="A link, a short example, or a concise story"></textarea></label>
+        <button class="button primary submit-button" type="submit">Send your signal <span>?</span></button>
+        <p class="form-note">Replace the placeholder email in the form action before publishing.</p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer shell">
+    <div><span class="brand-mark">?</span> Whimsy Cyberspace</div>
+    <div>Technical imagination for hidden systems.</div>
+  </footer>
+</body>
 </html>
