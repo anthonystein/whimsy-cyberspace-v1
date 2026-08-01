@@ -168,9 +168,7 @@
         </div>
       </div>
 
-      <form class="contribution-form reveal" action="https://formsubmit.co/your-email@example.com" method="POST">
-        <input type="hidden" name="_subject" value="Hidden Infrastructure contribution">
-        <input type="hidden" name="_captcha" value="false">
+      <form class="contribution-form reveal" data-endpoint="https://script.google.com/macros/s/AKfycbw7Zg2GY8dQBHRCvT9e-kdQCJ-MsQIUap7ZoU_rTkDZqoIS5ZJwSQvHVROoQD8n9aSFyA/exec">
         <div class="form-head"><span>Open signal</span><small>Deeper context follows useful thought.</small></div>
         <label>Name<input type="text" name="name" required></label>
         <label>Email<input type="email" name="email" required></label>
@@ -189,7 +187,7 @@
         <label>What would you do first?<textarea name="first_move" rows="4" required></textarea></label>
         <label>Show something relevant<textarea name="evidence" rows="3" placeholder="A link, a short example, or a concise story"></textarea></label>
         <button class="button primary submit-button" type="submit">Send your signal <span>↗</span></button>
-        <p class="form-note">Replace the placeholder email in the form action before publishing.</p>
+        <p class="form-note" aria-live="polite">Your signal will be added to the Whimsy project inbox.</p>
       </form>
     </section>
   </main>
