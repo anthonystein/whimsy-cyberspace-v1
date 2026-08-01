@@ -29,3 +29,57 @@ document.querySelectorAll('.system-node, .method-step, .mission-card, .layer-car
   });
   card.addEventListener('pointerleave', () => card.style.transform = '');
 });
+
+const contributionForm = document.querySelector('.contribution-form');
+
+if (contributionForm) {
+  const status = contributionForm.querySelector('.form-note');
+  const submitButton = contributionForm.querySelector('.submit-button');
+  const endpoint = contributionForm.dataset.endpoint;
+
+  contributionForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    if (!endpoint || !contributionForm.reportValidity()) return;
+
+    const formData = new FormData(contributionForm);
+    const email = String(formData.get('email') || '').trim();
+    const source = [
+      'Hidden Infrastructure contribution',
+      `Name: ${String(formData.get('name') || '').trim()}`,
+      `Layer: ${String(formData.get('layer') || '').trim()}`,
+      `Problem noticed: ${String(formData.get('observation') || '').trim()}`,
+      `First action: ${String(formData.get('first_move') || '').trim()}`,
+      `Relevant link or example: ${String(formData.get('evidence') || '').trim() || 'Not provided'}`,
+    ].join('\n');
+
+    submitButton.disabled = true;
+    status.textContent = 'Sending your signal…';
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          email,
+          source,
+          createdAt: new Date().toISOString(),
+        }),
+        redirect: 'follow',
+      });
+      const result = await response.text();
+
+      if (!response.ok || result.trim().toLowerCase() !== 'ok') {
+        throw new Error(`Submission failed: ${result}`);
+      }
+
+      contributionForm.reset();
+      status.textContent = 'Received. Thank you — your signal is in the system.';
+    } catch (error) {
+      console.error('Contribution form error:', error);
+      status.textContent = 'Not connected. Please try again or email admin@whimsycyberspace.com.';
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+}
