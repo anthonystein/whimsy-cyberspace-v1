@@ -390,6 +390,7 @@
 
   camera.addEventListener('pointerdown',e=>{
     if(e.pointerType==='mouse' && e.button!==0) return;
+    if(e.target.closest('.function-node, .core-node')) return;
     clearInterval(phaseTimer);
     clearTimeout(interactionResumeTimer);
     cancelMagnetism();
