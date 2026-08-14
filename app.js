@@ -30,6 +30,8 @@
   let magnetTimer = null;
   let resizeTimer = null;
   let interactionResumeTimer = null;
+  let wheelSettleTimer = null;
+  let wheelInteracting = false;
 
   const clamp = (value,min,max) => Math.min(max,Math.max(min,value));
   const isGuidedCamera = () => window.innerWidth <= 900 || window.matchMedia('(pointer:coarse)').matches;
@@ -73,10 +75,9 @@
       const required = path.dataset.functions.split(' ');
       path.classList.toggle('phase-active', key !== 'observe' && required.every(fn => phase.functions.includes(fn)));
     });
-    if(isGuidedCamera()) {
-      scrollActivePhaseIntoView(key);
-      if(body.classList.contains('entered')) fitPhaseToViewport(key);
-    }
+    const guidedCamera=isGuidedCamera();
+    if(guidedCamera) scrollActivePhaseIntoView(key);
+    if(body.classList.contains('entered') && (guidedCamera || restart)) fitPhaseToViewport(key);
     if(restart && playing) startSequence();
   }
 
@@ -194,7 +195,7 @@
     if(window.innerWidth<=900 && window.innerHeight<=600) return {min:.24,max:1.04};
     if(window.innerWidth<=600) return {min:.30,max:1};
     if(window.innerWidth<=900) return {min:.36,max:1.04};
-    return {min:.56,max:1.08};
+    return {min:.52,max:1.14};
   }
 
   function cacheNodeGeometry(){
@@ -276,9 +277,11 @@
   function getPhaseTarget(key){
     const phase=DATA.phases[key];
     if(!phase || key==='observe'){
+      if(!isGuidedCamera()) return {x:0,y:0,scale:.78};
       const rect=camera.getBoundingClientRect();
       return {x:0,y:0,scale:clamp(rect.width/1020,.37,.42)};
     }
+    if(!isGuidedCamera()) return getFitTarget(phase.functions,{includeCore:true,padding:86,minScale:.62,maxScale:.78});
     const landscape=window.innerWidth<=900 && window.innerHeight<=600;
     return getFitTarget(phase.functions,{includeCore:true,padding:landscape?6:(window.innerWidth<=430?14:28),minScale:landscape?.24:.30,maxScale:.62});
   }
@@ -313,7 +316,11 @@
       cameraState.vy*=.90;
       constrainCameraTarget(false);
     }else if(!hasPointers){ cameraState.vx=0; cameraState.vy=0; }
-    const ease=hasPointers ? .40 : (Math.abs(cameraState.vx)+Math.abs(cameraState.vy)>.1 ? .23 : .15);
+    const ease=hasPointers
+      ? (isGuidedCamera()?.40:.54)
+      : wheelInteracting
+        ? .44
+        : (Math.abs(cameraState.vx)+Math.abs(cameraState.vy)>.1 ? .23 : (isGuidedCamera()?.15:.19));
     cameraState.x+=(cameraState.targetX-cameraState.x)*ease;
     cameraState.y+=(cameraState.targetY-cameraState.y)*ease;
     cameraState.scale+=(cameraState.targetScale-cameraState.scale)*ease;
@@ -340,9 +347,10 @@
   }
 
   function applyMagnetism(){
-    if(!isGuidedCamera() || activePointers.size) return;
+    if(activePointers.size || wheelInteracting) return;
+    const guided=isGuidedCamera();
     const rect=camera.getBoundingClientRect();
-    const threshold=Math.min(108,rect.width*.25);
+    const threshold=guided ? Math.min(108,rect.width*.25) : Math.min(84,rect.width*.12);
     const candidates=['core',...DATA.phases[currentPhase].functions];
     let nearest=null;
     candidates.forEach(id=>{
@@ -354,15 +362,15 @@
       if(distance<threshold && (!nearest || distance<nearest.distance)) nearest={id,distance};
     });
     let ideal=null;
-    let strength=.18;
+    let strength=guided?.18:.07;
     if(nearest){
       ideal=nearest.id==='core'
-        ? getFitTarget([],{includeCore:true,padding:52,minScale:.56,maxScale:.68})
-        : getFitTarget([nearest.id],{includeCore:true,padding:32,minScale:.46,maxScale:.70});
+        ? getFitTarget([],{includeCore:true,padding:guided?52:78,minScale:guided?.56:.68,maxScale:guided?.68:.78})
+        : getFitTarget([nearest.id],{includeCore:true,padding:guided?32:72,minScale:guided?.46:.58,maxScale:guided?.70:.78});
     }else if(currentPhase!=='observe'){
       const phaseTarget=getPhaseTarget(currentPhase);
       const distance=Math.hypot(phaseTarget.x-cameraState.targetX,phaseTarget.y-cameraState.targetY)+Math.abs(phaseTarget.scale-cameraState.targetScale)*180;
-      if(distance<118){ ideal=phaseTarget; strength=.13; }
+      if(distance<(guided?118:92)){ ideal=phaseTarget; strength=guided?.13:.055; }
     }
     if(!ideal) return;
     cameraState.vx=0; cameraState.vy=0;
@@ -375,6 +383,23 @@
 
   function beginPan(pointer){
     gesture={mode:'pan',moved:false,startX:pointer.x,startY:pointer.y,lastX:pointer.x,lastY:pointer.y,lastTime:performance.now(),velocityX:0,velocityY:0};
+  }
+
+  function beginWheelInteraction(){
+    clearInterval(phaseTimer);
+    clearTimeout(interactionResumeTimer);
+    clearTimeout(magnetTimer);
+    if(!wheelInteracting) cancelMagnetism();
+    else{ cameraState.vx=0; cameraState.vy=0; }
+    wheelInteracting=true;
+    clearTimeout(wheelSettleTimer);
+    wheelSettleTimer=setTimeout(()=>{
+      wheelInteracting=false;
+      requestCamera();
+      clearTimeout(magnetTimer);
+      if(isGuidedCamera()) magnetTimer=setTimeout(applyMagnetism,220);
+      if(playing) interactionResumeTimer=setTimeout(startSequence,5500);
+    },520);
   }
 
   function beginPinch(){
@@ -467,10 +492,10 @@
   camera.addEventListener('wheel',e=>{
     if(!body.classList.contains('entered')) return;
     e.preventDefault();
-    cancelMagnetism();
+    beginWheelInteraction();
     const modeScale=e.deltaMode===1?16:e.deltaMode===2?window.innerHeight:1;
-    const dy=clamp(e.deltaY*modeScale,-90,90);
-    const zoomFactor=Math.exp(-dy*.00145);
+    const dy=clamp(e.deltaY*modeScale,-110,110);
+    const zoomFactor=Math.exp(-dy*.0016);
     const limits=getScaleLimits();
     const oldScale=cameraState.targetScale;
     const nextScale=clamp(oldScale*zoomFactor,limits.min,limits.max);
