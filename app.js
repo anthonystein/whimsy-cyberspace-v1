@@ -32,8 +32,13 @@
   let interactionResumeTimer = null;
   let wheelSettleTimer = null;
   let wheelInteracting = false;
+  let wheelMotion = {velocity:0,lastTime:0,anchorX:0,anchorY:0,worldX:0,worldY:0};
+  let missionRevision = 0;
+  let activeMissionId = null;
+  let editorEnabled = false;
 
   const clamp = (value,min,max) => Math.min(max,Math.max(min,value));
+  const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const isGuidedCamera = () => window.innerWidth <= 900 || window.matchMedia('(pointer:coarse)').matches;
 
   const glow = document.querySelector('.cursor-glow');
@@ -159,7 +164,7 @@
     const roleList = functionLayer.querySelector('.phase-role-list');
     roleList.innerHTML = item.roles.map(role => `<div class="phase-role"><strong>${role.phase}</strong><span>${role.action}</span><small>${role.owner}</small></div>`).join('');
     const missionList = functionLayer.querySelector('.mission-list');
-    missionList.innerHTML = item.missions.map((m,i) => `<button type="button" class="mission-card" data-mission="${i}"><strong>${m.name}</strong><small>${m.phase} · ${m.owner}</small><span>↗</span></button>`).join('');
+    missionList.innerHTML = item.missions.map((m,i) => `<button type="button" class="mission-card" data-mission="${i}"><strong>${escapeHTML(m.name)}</strong><small>${escapeHTML(m.phase)} · ${escapeHTML(m.owner)}</small><span>↗</span><em class="mission-card-status">${escapeHTML(m.status || 'Not started')}</em></button>`).join('');
     missionList.querySelectorAll('.mission-card').forEach(btn => btn.addEventListener('click', () => openMission(key, Number(btn.dataset.mission))));
     functionLayer.classList.add('open');
     functionLayer.setAttribute('aria-hidden','false');
@@ -178,17 +183,19 @@
     const fn = DATA.functions[key];
     const m = fn?.missions[index];
     if(!m) return;
+    activeMissionId = m.id || null;
     missionLayer.querySelector('h2').textContent = m.name;
     missionLayer.querySelector('.mission-meta').textContent = `${fn.name.toUpperCase()} · ${m.phase.toUpperCase()}`;
     missionLayer.querySelector('.mission-problem').textContent = m.problem;
     missionLayer.querySelector('.mission-deliverable').textContent = m.deliverable;
     missionLayer.querySelector('.mission-proof').textContent = m.proof;
     missionLayer.querySelector('.mission-owner').textContent = m.owner;
+    missionLayer.querySelector('.mission-status').textContent = m.status || 'Not started';
     missionLayer.querySelector('.mission-signal').href = `mailto:admin@whimsycyberspace.com?subject=${encodeURIComponent('Whimsy mission — '+m.name)}`;
     missionLayer.classList.add('open');
     missionLayer.setAttribute('aria-hidden','false');
   }
-  function closeMission(){ missionLayer.classList.remove('open'); missionLayer.setAttribute('aria-hidden','true'); }
+  function closeMission(){ missionLayer.classList.remove('open'); missionLayer.setAttribute('aria-hidden','true'); activeMissionId=null; }
   document.querySelector('.mission-back').addEventListener('click', closeMission);
 
   function getScaleLimits(){
@@ -208,7 +215,7 @@
 
   function getCameraBounds(scale){
     const rect = camera.getBoundingClientRect();
-    const overscroll = isGuidedCamera() ? Math.min(96,rect.width*.22) : 110;
+    const overscroll = isGuidedCamera() ? Math.min(96,rect.width*.22) : Math.min(340,rect.width*.26);
     return {
       x:Math.max(0,WORLD_WIDTH*scale/2-rect.width/2+overscroll),
       y:Math.max(0,WORLD_HEIGHT*scale/2-rect.height/2+overscroll)
@@ -389,17 +396,47 @@
     clearInterval(phaseTimer);
     clearTimeout(interactionResumeTimer);
     clearTimeout(magnetTimer);
-    if(!wheelInteracting) cancelMagnetism();
+    if(!wheelInteracting){ cancelMagnetism(); wheelMotion.velocity=0; wheelMotion.lastTime=performance.now(); }
     else{ cameraState.vx=0; cameraState.vy=0; }
     wheelInteracting=true;
     clearTimeout(wheelSettleTimer);
     wheelSettleTimer=setTimeout(()=>{
       wheelInteracting=false;
+      settleDesktopZoom();
       requestCamera();
       clearTimeout(magnetTimer);
       if(isGuidedCamera()) magnetTimer=setTimeout(applyMagnetism,220);
       if(playing) interactionResumeTimer=setTimeout(startSequence,5500);
-    },520);
+    },180);
+  }
+
+  function desktopRestLevels(){
+    const limits=getScaleLimits();
+    return [.62,.78,1.02].filter(level=>level>=limits.min && level<=limits.max);
+  }
+
+  function zoomResistance(scale,delta){
+    if(isGuidedCamera()) return 1;
+    const nearest=Math.min(...desktopRestLevels().map(level=>Math.abs(level-scale)));
+    const gentle=Math.min(1,Math.abs(delta)/42);
+    return nearest<.045 ? .56+gentle*.44 : 1;
+  }
+
+  function settleDesktopZoom(){
+    if(isGuidedCamera()) return;
+    const levels=desktopRestLevels();
+    const projected=clamp(cameraState.targetScale*Math.exp(-wheelMotion.velocity*.0018),getScaleLimits().min,getScaleLimits().max);
+    const rest=levels.reduce((best,level)=>Math.abs(level-projected)<Math.abs(best-projected)?level:best,levels[0]);
+    const capture=Math.abs(rest-projected)<.115 || Math.abs(wheelMotion.velocity)<5;
+    if(!capture) return;
+    const oldScale=cameraState.targetScale;
+    const nextScale=rest;
+    const ratio=nextScale/oldScale;
+    cameraState.targetX=wheelMotion.anchorX-(wheelMotion.anchorX-cameraState.targetX)*ratio;
+    cameraState.targetY=wheelMotion.anchorY-(wheelMotion.anchorY-cameraState.targetY)*ratio;
+    cameraState.targetScale=nextScale;
+    constrainCameraTarget(false);
+    wheelMotion.velocity=0;
   }
 
   function beginPinch(){
@@ -495,7 +532,11 @@
     beginWheelInteraction();
     const modeScale=e.deltaMode===1?16:e.deltaMode===2?window.innerHeight:1;
     const dy=clamp(e.deltaY*modeScale,-110,110);
-    const zoomFactor=Math.exp(-dy*.0016);
+    const now=performance.now();
+    const elapsed=Math.max(8,now-(wheelMotion.lastTime||now));
+    wheelMotion.velocity=wheelMotion.velocity*.62+(dy/elapsed*16)*.38;
+    wheelMotion.lastTime=now;
+    const zoomFactor=Math.exp(-dy*.0016*zoomResistance(cameraState.targetScale,dy));
     const limits=getScaleLimits();
     const oldScale=cameraState.targetScale;
     const nextScale=clamp(oldScale*zoomFactor,limits.min,limits.max);
@@ -503,6 +544,10 @@
     const rect=camera.getBoundingClientRect();
     const px=e.clientX-(rect.left+rect.width/2);
     const py=e.clientY-(rect.top+rect.height/2);
+    wheelMotion.anchorX=px;
+    wheelMotion.anchorY=py;
+    wheelMotion.worldX=(px-cameraState.targetX)/oldScale;
+    wheelMotion.worldY=(py-cameraState.targetY)/oldScale;
     const ratio=nextScale/oldScale;
     cameraState.targetX=px-(px-cameraState.targetX)*ratio;
     cameraState.targetY=py-(py-cameraState.targetY)*ratio;
@@ -531,7 +576,7 @@
       fn.missions.forEach((m,index) => { if(q && `${m.name} ${m.phase} ${m.owner} ${m.problem}`.toLowerCase().includes(q)) rows.push({type:'Mission',key,index,title:m.name,sub:`${fn.name} · ${m.phase}`,icon:fn.icon}); });
     });
     const container=searchPanel.querySelector('.search-results');
-    container.innerHTML = rows.slice(0,14).map((r,i)=>`<button class="search-result" type="button" data-result="${i}"><img src="${r.icon}" alt=""><span><strong>${r.title}</strong><small>${r.sub}</small></span><em>${r.type}</em></button>`).join('');
+    container.innerHTML = rows.slice(0,14).map((r,i)=>`<button class="search-result" type="button" data-result="${i}"><img src="${r.icon}" alt=""><span><strong>${escapeHTML(r.title)}</strong><small>${escapeHTML(r.sub)}</small></span><em>${r.type}</em></button>`).join('');
     container.querySelectorAll('.search-result').forEach((btn,i)=>btn.addEventListener('click',()=>{
       const r=rows[i]; closeSearch(); openFunction(r.key); if(r.type==='Mission') setTimeout(()=>openMission(r.key,r.index),420);
     }));
@@ -546,5 +591,101 @@
     if(e.key==='Escape'){ if(searchPanel.classList.contains('open')) closeSearch(); else if(missionLayer.classList.contains('open')) closeMission(); else if(functionLayer.classList.contains('open')) closeFunction(); }
   });
 
+  function applyMissionDocument(document){
+    if(!document || !Array.isArray(document.missions)) return;
+    missionRevision=document.revision || 0;
+    Object.keys(DATA.functions).forEach(key=>{ DATA.functions[key].missions=[]; });
+    document.missions.filter(mission=>!mission.archived && DATA.functions[mission.functionKey]).forEach(mission=>DATA.functions[mission.functionKey].missions.push(mission));
+    if(activeFunction) openFunction(activeFunction);
+  }
+
+  async function refreshMissions(includeArchived=false){
+    const response=await fetch(`/api/missions${includeArchived?'?archived=1':''}`,{credentials:'same-origin'});
+    if(!response.ok) throw new Error('Missions could not be loaded.');
+    const document=await response.json();
+    applyMissionDocument(document);
+    return document;
+  }
+
+  const editor=document.querySelector('.mission-editor');
+  const missionForm=document.querySelector('.mission-form');
+  const formMessage=document.querySelector('.mission-form-message');
+  function findMission(id){
+    for(const [functionKey,fn] of Object.entries(DATA.functions)){
+      const mission=fn.missions.find(item=>item.id===id);
+      if(mission) return {...mission,functionKey};
+    }
+    return null;
+  }
+  function openMissionEditor(mission=null){
+    if(!editorEnabled) return;
+    const defaultFunction=mission?.functionKey || activeFunction || 'sales';
+    missionForm.reset();
+    missionForm.elements.id.value=mission?.id || '';
+    missionForm.elements.name.value=mission?.name || '';
+    missionForm.elements.functionKey.value=defaultFunction;
+    missionForm.elements.phase.value=mission?.phase || 'Observe';
+    missionForm.elements.owner.value=mission?.owner || '';
+    missionForm.elements.status.value=mission?.status || 'Not started';
+    missionForm.elements.problem.value=mission?.problem || '';
+    missionForm.elements.deliverable.value=mission?.deliverable || '';
+    missionForm.elements.proof.value=mission?.proof || '';
+    missionForm.querySelector('.mission-form-head h2').textContent=mission?'Edit mission':'Add mission';
+    missionForm.querySelector('.mission-save').textContent=mission?'Save changes':'Add mission';
+    missionForm.querySelector('.mission-archive').hidden=!mission;
+    formMessage.textContent='';
+    editor.classList.add('open');
+    editor.setAttribute('aria-hidden','false');
+    setTimeout(()=>missionForm.elements.name.focus(),60);
+  }
+  function closeMissionEditor(){ editor.classList.remove('open'); editor.setAttribute('aria-hidden','true'); }
+  async function mutateMission(method,payload){
+    const response=await fetch('/api/missions',{method,credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:missionRevision,...payload})});
+    const data=await response.json();
+    if(response.status===401){ location.href='/edit'; throw new Error('Please sign in again.'); }
+    if(!response.ok) throw new Error(data.error || 'The mission could not be saved.');
+    applyMissionDocument(data);
+    return data;
+  }
+  async function enableEditor(){
+    const session=await fetch('/api/auth/session',{credentials:'same-origin'}).then(response=>response.json());
+    if(!session.authenticated){ location.replace('/edit'); return; }
+    editorEnabled=true;
+    body.classList.add('edit-mode');
+    missionForm.elements.functionKey.innerHTML=Object.entries(DATA.functions).map(([key,fn])=>`<option value="${key}">${escapeHTML(fn.name)}</option>`).join('');
+    missionForm.elements.phase.innerHTML=Object.values(DATA.phases).map(phase=>`<option>${escapeHTML(phase.name)}</option>`).join('');
+    await refreshMissions(true);
+  }
+  document.querySelector('.mission-add').addEventListener('click',()=>openMissionEditor());
+  document.querySelector('.mission-edit').addEventListener('click',()=>openMissionEditor(findMission(activeMissionId)));
+  document.querySelector('.mission-form-close').addEventListener('click',closeMissionEditor);
+  editor.addEventListener('click',event=>{if(event.target===editor)closeMissionEditor();});
+  missionForm.addEventListener('submit',async event=>{
+    event.preventDefault();
+    const save=missionForm.querySelector('.mission-save');
+    save.disabled=true; formMessage.textContent='Saving…';
+    try{
+      const values=Object.fromEntries(new FormData(missionForm));
+      const id=values.id; delete values.id;
+      await mutateMission(id?'PATCH':'POST',id?{id,mission:values}:{mission:values});
+      closeMissionEditor();
+      if(activeFunction) openFunction(activeFunction);
+    }catch(error){formMessage.textContent=error.message;}
+    finally{save.disabled=false;}
+  });
+  missionForm.querySelector('.mission-archive').addEventListener('click',async()=>{
+    const id=missionForm.elements.id.value;
+    if(!id || !window.confirm('Archive this mission? It will leave the public system but remain stored.')) return;
+    formMessage.textContent='Archiving…';
+    try{await mutateMission('DELETE',{id}); closeMissionEditor(); closeMission(); if(activeFunction)openFunction(activeFunction);}
+    catch(error){formMessage.textContent=error.message;}
+  });
+  document.querySelector('.editor-logout').addEventListener('click',async()=>{
+    await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});
+    location.href='/';
+  });
+
+  refreshMissions().catch(()=>{});
+  if(new URLSearchParams(location.search).get('edit')==='1') enableEditor().catch(()=>location.replace('/edit'));
   setPhase('observe');
 })();

@@ -23,8 +23,24 @@ Current asset paths:
 
 If you want to switch a placeholder from `.svg` to `.jpg` or `.png`, change the matching path in `index.html` or `data.js`.
 
-## Content editing
-All phase, function and mission content lives in `data.js`. Add missions there without changing the layout.
+## Living mission editing
+The original missions in `data.js` seed the living system. Public visitors read the current mission document from `/api/missions`; if the API is temporarily unavailable, the original content remains visible.
+
+Administrators visit `/edit`, enter the private passphrase, and edit missions inside the normal function and mission views. The editor supports:
+
+- adding and updating missions;
+- title, function, phase, owner, status, problem, deliverable, and evidence fields;
+- `Not started`, `In progress`, and `Completed` states;
+- archiving without permanently deleting mission history.
+
+Mission data is stored as a private Vercel Blob. Link a private Blob store to the Vercel project, then add these Sensitive environment variables to Production and Preview:
+
+- `WHIMSY_ADMIN_KEY_HASH`
+- `WHIMSY_SESSION_SECRET`
+
+Vercel creates `BLOB_READ_WRITE_TOKEN` when the Blob store is connected. Generate the two Whimsy values locally with `pnpm admin-key`; paste only the generated values into Vercel and never commit them.
+
+For local development only, set `WHIMSY_DATA_FILE=.whimsy-local-data.json`. The local file and all `.env` files are ignored by Git.
 
 ## Launch checklist
 1. Contribution links send mission responses to `admin@whimsycyberspace.com`.
@@ -45,3 +61,10 @@ All phase, function and mission content lives in `data.js`. Add missions there w
 - Trackpad/mouse zoom is slower, cursor-anchored, and eased instead of stepping in large jumps.
 - Function and mission panels use contained, smoother scrolling with stable scrollbars.
 - Mission "Back to function" control is positioned below the persistent header so it cannot be hidden.
+
+## Living-system update
+- Desktop zoom remains continuous during a trackpad gesture, then eases into soft overview (`0.62`), exploration (`0.78`), or focus (`1.02`) resting levels.
+- Zoom stays anchored to the cursor and uses a wider safe pan envelope so the anchor is not lost near the viewport edge.
+- Mobile camera thresholds and guided node behavior remain unchanged.
+- Mission writes require a signed, HTTP-only, same-site session cookie and same-origin JSON requests.
+- A revision number plus Blob ETags protects against stale or overlapping saves.

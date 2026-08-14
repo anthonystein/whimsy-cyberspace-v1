@@ -1,4 +1,4 @@
-window.WHIMSY_DATA = {
+const WHIMSY_DATA = {
   phases: {
     observe: { index:'01 / 05', name:'Observe', thesis:'See how the work behaves in real life.', owner:'David + AI', output:'Notice friction before building.', functions:['rnd','operations','marketing','sales','inventory','hr','finance','ecommerce'] },
     capture: { index:'02 / 05', name:'Capture', thesis:'Turn knowledge into assets.', owner:'David + AI', output:'A library of systems, not ideas.', functions:['rnd','operations','marketing'] },
@@ -49,3 +49,6 @@ window.WHIMSY_DATA = {
     ]}
   }
 };
+
+if (typeof window !== 'undefined') window.WHIMSY_DATA = WHIMSY_DATA;
+if (typeof module !== 'undefined' && module.exports) module.exports = WHIMSY_DATA;

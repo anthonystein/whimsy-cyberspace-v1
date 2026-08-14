@@ -1,0 +1,11 @@
+{
+  "name": "whimsy-cyberspace-v1",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "admin-key": "node scripts/hash-admin-key.js"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.3.0"
+  }
+}
