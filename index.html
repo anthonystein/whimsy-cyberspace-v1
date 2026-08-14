@@ -8,7 +8,7 @@
   <meta name="description" content="An interactive operating model showing how Primetime Paint & Paper improves itself.">
   <link rel="stylesheet" href="styles.css">
   <script src="data.js" defer></script>
-  <script src="app.js?v=20260814-camera-2" defer></script>
+  <script src="app.js?v=20260814-living-missions" defer></script>
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
@@ -149,7 +149,7 @@
       <p class="function-thesis">Replace memory with systems.</p>
       <div class="leads-to"><small>LEADS TO</small><strong>Consistent execution at scale.</strong></div>
       <section class="phase-role-section"><div class="section-head"><span>Role in the loop</span><small>Where this function participates</small></div><div class="phase-role-list"></div></section>
-      <section class="missions-section"><div class="section-head"><span>Open missions</span><small>Finite work. Visible outcome.</small></div><div class="mission-list"></div></section>
+      <section class="missions-section"><div class="section-head"><span>Open missions</span><small>Finite work. Visible outcome.</small><button class="mission-add editor-only" type="button">+ Add mission</button></div><div class="mission-list"></div></section>
     </div>
   </aside>
 
@@ -166,13 +166,33 @@
         <i>↓</i>
         <div><small>EVIDENCE</small><p class="mission-proof"></p></div>
       </div>
-      <div class="mission-footer"><span class="mission-owner"></span><a class="mission-signal" href="mailto:admin@whimsycyberspace.com">Send a signal ↗</a></div>
+      <div class="mission-footer"><span><span class="mission-owner"></span><small class="mission-status"></small></span><button class="mission-edit editor-only" type="button">Edit mission</button><a class="mission-signal" href="mailto:admin@whimsycyberspace.com">Send a signal ↗</a></div>
     </div>
   </aside>
 
   <div class="search-panel" aria-hidden="true">
     <div class="search-box"><span>⌕</span><input type="search" placeholder="Search functions or missions" aria-label="Search"><kbd>ESC</kbd></div>
     <div class="search-results"></div>
+  </div>
+
+  <div class="editor-bar editor-only"><span><i></i> Editing the living system</span><button class="editor-logout" type="button">Sign out</button></div>
+  <div class="mission-editor" aria-hidden="true">
+    <form class="mission-form">
+      <div class="mission-form-head"><div><small>LIVE MISSION</small><h2>Edit mission</h2></div><button class="mission-form-close" type="button" aria-label="Close editor">×</button></div>
+      <input name="id" type="hidden">
+      <div class="mission-form-grid">
+        <label class="wide">Title<input name="name" maxlength="180" required></label>
+        <label>Function<select name="functionKey" required></select></label>
+        <label>Phase<select name="phase" required></select></label>
+        <label>Owner<input name="owner" maxlength="180" required></label>
+        <label>Status<select name="status"><option>Not started</option><option>In progress</option><option>Completed</option></select></label>
+        <label class="wide">Problem<textarea name="problem" maxlength="1600" required></textarea></label>
+        <label class="wide">Deliverable<textarea name="deliverable" maxlength="1600" required></textarea></label>
+        <label class="wide">Evidence<textarea name="proof" maxlength="1600" required></textarea></label>
+      </div>
+      <p class="mission-form-message" role="status"></p>
+      <div class="mission-form-actions"><button class="mission-archive" type="button">Archive mission</button><button class="mission-save" type="submit">Save changes</button></div>
+    </form>
   </div>
 </body>
 </html>
